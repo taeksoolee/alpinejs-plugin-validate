@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App</title>
+
+  <script src="./alpinejs-plugin-validate.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/mask@3.x.x/dist/cdn.min.js"></script>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- <script src="https://unpkg.com/validator@latest/validator.min.js"></script> -->
+
+  <style>
+    input.error {
+      border: 1px solid red;
+      outline: 1px solid red;
+    }
+
+    p.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <div>
+    <h1>Login</h1>
+    <form
+      name="loginForm"
+      x-data="{ 
+        formData: { 
+          email: '', 
+          password: '', 
+        },
+        errors: { },
+      }"
+      x-validate
+      @submit.prevent="(event) => {
+        alert(`Result : ${event.valid}`);
+      }"
+    >
+      <div>
+        <label>Email</label>
+        <input name="email" x-model="formData.email" :class="{ error: errors.email?.invalid }" x-rule="required, email, minSize:3 " />
+        <p x-text="JSON.stringify(errors.email)"></p>
+      </div>
+
+      <div>
+        <label>Password</label>
+        <input name="password" x-model="formData.password" :class="{ error: errors.password?.invalid }" x-rule="required, maxSize:10" />
+        <p x-text="JSON.stringify(errors.password)"></p>
+      </div>
+
+      <div>
+        <button>Login</button>
+        <button type="reset">Reset</button>
+      </div>
+
+      <p x-html="JSON.stringify(errors, null, 4).replace(/ /g, '&nbsp').replace(/\n/g, '<br />')"></p>
+    </form>
+  </div>
+
+
+  <div>
+    <h1>Profile</h1>
+    <form 
+      name="profileForm"
+      x-validate
+      x-data="{
+        formData: {
+          my: {
+            info: {
+              firstName: '',
+              lastName: '',
+              phone: '',
+            },
+          },
+          friends: [
+            {
+              firstName: '',
+              lastName: '',
+              phone: '',
+            },
+          ],
+        },
+        errors: {},
+      }"
+      @submit="(event) => {
+        alert(`Result: ${event.valid}`);
+      }"
+    >
+    
+      <fieldset>
+        <legend>My</legend>
+        <div>
+          <label>* FirstName</label>
+          <input name="my.firstName" x-model="formData.my.firstName" x-rule="required,minSize:2" placeholder="taeksoo" :class="{ error: errors.my?.firstName?.invalid }" />
+          <p x-text="JSON.stringify(errors.my.firstName)"></p>
+        </div>
+        <div>
+          <label>* LastName</label>
+          <input name="my.lastName" x-model="formData.my.lastName" x-rule="minSize:2" placeholder="lee" :class="{ error: errors.my?.lastName?.invalid }" />
+          <p x-text="JSON.stringify(errors.my.lastName)"></p>
+        </div>
+        <div>
+          <label>Phone</label>
+          <input name="my.phone" x-model="formData.my.phone" x-rule="phone:'-'" x-mask="999-9999-9999" placeholder="010-1234-1234" :class="{ error: errors.my?.firstName?.phone }" />
+          <p x-text="JSON.stringify(errors.my.phone)"></p>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Friends</legend>
+        <template x-for="(friend, index) in formData.friends">
+          <div>
+            <input :name="`friends[${index}].firstName`" x-model="friend.firstName" placeholder="* firstName" x-rule="required,minSize:2" />
+            <input :name="`friends[${index}].lastName`" x-model="friend.lastName" placeholder="lastName"  x-rule="required,minSize:2" />
+            <input :name="`friends[${index}].phone`" x-model="friend.phone" x-rule="phone:'-'" x-mask="999-9999-9999" placeholder="010-1234-1234" />
+            <button type="button" @click="() => formData.friends.splice(index, 1)">-</button>
+          </div>
+        </template>
+        <button type="button" @click="() => formData.friends.push({ firstName: '', lastName: '', phone: '' })">+</button>
+      </fieldset>
+
+      <div>
+        <button>Submit</button>
+        <button>Reset</button>
+      </div>
+
+      <p x-html="JSON.stringify(errors, null, 4).replace(/ /g, '&nbsp').replace(/\n/g, '<br />')"></p>
+    </form>
+  </div>
+
+  <div>
+    <h1>List Example</h1>
+    <form x-data="{ formData: {list: [ {a: 1}, {a: 2}, {a: 3}, {a: 4}] }, errors: {}, }">
+      <template x-for="(item, index) in formData.list">
+        <div>
+          <input :name="`list[${index}].a`" x-model="item.a" x-rule="required"></input>
+          <button type="button" @click="formData.list.splice(index, 1)">-</button>
+        </div>
+      </template>
+  
+      <button type="button" @click="formData.list.push({a: ''})">+</button>
+  
+      <p x-html="JSON.stringify(errors, null, 4).replace(/ /g, '&nbsp').replace(/\n/g, '<br />')"></p>
+    </form>
+  </div>
+</body>
+</html>
