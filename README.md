@@ -4,8 +4,8 @@
 ## Getting Started
 1. Add script in html
 ```html
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <script defer src="/path/to/alpinejs-plugin-validate.js">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 ```
 2. Write Form, input
 ```html
